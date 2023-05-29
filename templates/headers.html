@@ -1,0 +1,169 @@
+{% extends 'base.html'%}
+{% block title %}Index{% endblock %}
+{% block content %}
+<script src="https://cdn.onesignal.com/sdks/OneSignalSDK.js" async=""></script>
+<script>
+  window.OneSignal = window.OneSignal || [];
+  OneSignal.push(function() {
+    OneSignal.init({
+      appId: "f17bc311-f05b-434a-b916-b2c798195aba",
+    });
+  });
+</script>
+
+
+<div class="container">
+    <div class="row">
+        <div class="col-lg">
+            <div class="jumbotron p-3">
+                 <br>
+                  <div>
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                                <span>{{ message }}</span>
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">×</span>
+                                </button>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                    {% endwith %}
+
+                </div> <br>
+
+
+            </div>
+        </div>
+    </div>
+
+
+<style>
+        h3 {
+          background-image: radial-gradient(ellipse, #553c9a, #ee4b2b);
+          color: transparent;
+          background-clip: text;
+          -webkit-background-clip: text;
+        }
+   </style>
+
+
+
+
+<div class="d-flex justify-content-between">
+  <h3>Headers Table</h3>
+
+</div>
+    <br>
+    <table class="table table-hover table-dark">
+          <tr>
+            <th>ID</th>
+            <th>Full Name</th>
+            <th>Relationship</th>
+            <th>Departement ID</th>
+            <th>Dept Name</th>
+              <th>Modifier Supprimer</th>
+          </tr>
+
+        {% for row in heads_data %}
+
+          <tr>
+              <td>{{row['e']['id']}}</td>
+              <td>{{row['e']['name']}}</td>
+              <td>{{row['r'].type}}</td>
+              <td>{{row['d'].id}}</td>
+              <td>{{row['d']['name']}}</td>
+              <td>
+                  <a href="/modifier2/{{row['e']['id']}}" class="btn btn-warning  " data-toggle="modal" data-target="#secondModal2{{row['e']['id']}}">modifier</a>
+                  <a href="/supprimer2/{{row['e']['id']}}" class="btn btn-warning " id="btn5">supprimer</a>
+              </td>
+
+
+          </tr>
+
+        <div class="modal fade" id="secondModal2{{row['e']['id']}}" tabindex="-1" role="dialog" aria-labelledby="secondModalLabel2" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content text-center">
+                        <div class="modal-header">
+                            <h5 class="modal-title " id="secondModalLabel2">MODIFY A HEADER</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                            </button>
+
+                        </div>
+                        <div class="modal-body">
+                            <form action="{{url_for('modifier_header')}}" method="POST">
+                                <div class="form-group">
+                                    <input  name="id" type="hidden" value="{{row['e']['id']}}">
+                                    <label for="id2">ID</label>
+                                    <input type="text" name="id" class="form-control" id="id2" aria-describedby="ID" placeholder="Enter ID" required="1" value="{{row['e']['id']}}" disabled>
+                                </div>
+                                <div class="form-group">
+                                    <label for="name2">Full name</label>
+                                    <input type="text" class="form-control" name="name" id="name2" aria-describedby="names" placeholder="Enter the full name" required="1" value="{{row['e']['name']}}">
+                                </div>
+                                <div class="form-group">
+                                    <label for="BORN2">year of birth</label>
+                                    <input type="text" class="form-control" name="born" id="BORN2" aria-describedby="year of birth" placeholder="Enter the year of birth" required="1" value="{{row['e']['born']}}">
+                                </div>
+
+                                <div class="form-group">
+
+                                    <label for="joined2">year of joining</label>
+                                    <input type="text" class="form-control" name="join" id="joined2" aria-describedby="joined" placeholder="Entrer year of joining" required="1" value="{{row['e']['joined']}}">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="salary2">Salary</label>
+                                    <input type="number" class="form-control" name="salary" id="salary2" aria-describedby="TLF" placeholder="Salary" required="1" value="{{row['e']['salary']}}">
+                                </div>
+                                <div class="form-group">
+                                    <label for="desig2">Designation</label>
+                                    <input type="text" class="form-control" name="desig" id="desig2" aria-describedby="desig" placeholder="Designation" required="1" value="{{row['e']['designation']}}">
+                                </div>
+                                <div class="form-group">
+                                    <label for="PerfRat2">performance rating</label>
+                                    <input type="number" class="form-control" name="perfRat" id="PerfRat2" aria-describedby="PerfRating" placeholder="Performance Rating" required="1" value="{{row['e']['PerfRating']}}">
+                                </div>
+                                <!-- Emp Infos -->
+                               <div class="form-group">
+                                    <label for="id_d">Department ID</label>
+                                    <input type="number" name="id_D" class="form-control" id="id_d" aria-describedby="ID" placeholder="Enter ID" required="1" value="{{row['d'].id}}" disabled>
+                                </div>
+                                <div class="form-group">
+                                <label for="department2">Department</label>
+                                <select name="department" id="department2" class="form-control" required>
+                                    <option value="{{row['d']['name']}}">{{row['d']['name']}}</option>
+                                    <option value="Finance">Finance</option>
+                                    <option value="Tech Ops">Tech Ops</option>
+                                    <option value="Analytics">Analytics</option>
+                                    <option value="Sales">Sales</option>
+                                    <option value="Marketing">Marketing</option>
+                                </select>
+                            </div>
+
+
+                                <button class="btn btn-primary" type="submit">Modifier</button>
+
+                            </form>
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+
+                        </div>
+                    </div>
+                </div>
+                </div>
+        {% endfor %}
+
+
+
+
+      </table>
+<!---->
+</div>
+
+
+{% endblock content %}
